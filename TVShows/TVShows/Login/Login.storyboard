@@ -26,20 +26,38 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nJY-lS-ctm">
-                                <rect key="frame" x="157" y="316" width="69" height="28"/>
+                                <rect key="frame" x="95" y="275" width="225" height="114"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <connections>
                                     <action selector="TouchUpInside:" destination="5eQ-CX-lZT" eventType="touchUpInside" id="j5i-Pf-Khn"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="R1b-oT-rl2">
+                                <rect key="frame" x="197" y="223" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="50h-LI-Uf2">
+                                <rect key="frame" x="308" y="771" width="51" height="31"/>
+                            </switch>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QJe-P8-Lor">
+                                <rect key="frame" x="242" y="771.5" width="46" height="30"/>
+                                <state key="normal" title="Button"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="URc-lj-w1S" firstAttribute="bottom" secondItem="50h-LI-Uf2" secondAttribute="bottom" constant="60" id="E2g-A3-Ymw"/>
+                            <constraint firstItem="50h-LI-Uf2" firstAttribute="centerY" secondItem="QJe-P8-Lor" secondAttribute="centerY" id="Sru-OK-WY2"/>
+                            <constraint firstItem="50h-LI-Uf2" firstAttribute="leading" secondItem="QJe-P8-Lor" secondAttribute="trailing" constant="20" id="Xt9-nW-TiS"/>
+                            <constraint firstItem="URc-lj-w1S" firstAttribute="trailing" secondItem="50h-LI-Uf2" secondAttribute="trailing" constant="57" id="rEH-5e-Rw1"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="URc-lj-w1S"/>
                     </view>
                     <connections>
                         <outlet property="Label" destination="Zph-dR-lcK" id="n2e-OI-z2t"/>
                         <outlet property="myButton" destination="nJY-lS-ctm" id="4Or-Hf-Mol"/>
+                        <outlet property="mySpinner" destination="R1b-oT-rl2" id="JhJ-ay-4J2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Pax-4b-Avg" userLabel="First Responder" sceneMemberID="firstResponder"/>
