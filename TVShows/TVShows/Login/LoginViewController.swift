@@ -23,7 +23,6 @@ final class LoginViewController: UIViewController {
         numberOfClicks += 1
         if numberOfClicks < 10 {
             buttonPressCounterLabel.text = "Button press counter: " + String(numberOfClicks)
-            
         } else if numberOfClicks < 30 {
             buttonPressCounterLabel.text = "You really like this button, don't you? \n" + String(numberOfClicks)
         } else{
