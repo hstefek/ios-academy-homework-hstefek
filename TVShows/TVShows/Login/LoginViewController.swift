@@ -8,67 +8,44 @@
 
 import UIKit
 
-class LoginViewController: UIViewController {
+final class LoginViewController: UIViewController {
 
-    var counter = 0
+    private var numberOfClicks: Int = 0
    
-
-    @IBOutlet weak var mySpinner: UIActivityIndicatorView!
+    // MARK: - Outlets
     
-    @IBOutlet weak var myButton: UIButton!
+    @IBOutlet private weak var touchCounterButtonSpinner: UIActivityIndicatorView!
+    @IBOutlet private weak var touchCounterButton: UIButton!
+    @IBOutlet private weak var buttonPressCounterLabel: UILabel!
     
-    @IBAction func TouchUpInside(_ sender: Any) {
+    @IBAction private func touchCounterButtonActionHandler(){
         print("Hello World!")
-        counter += 1
-        if counter < 10{
-            Label.text = "Button press counter: " + String(counter)}
-        else if counter < 30{
-            Label.text = "You really like this button, don't you? \n" + String(counter)
+        numberOfClicks += 1
+        if numberOfClicks < 10 {
+            buttonPressCounterLabel.text = "Button press counter: " + String(numberOfClicks)
+            
+        } else if numberOfClicks < 30 {
+            buttonPressCounterLabel.text = "You really like this button, don't you? \n" + String(numberOfClicks)
+        } else{
+            buttonPressCounterLabel.text = "Can you stop doing that? \n" + String(numberOfClicks)
         }
-        else{
-            Label.text = "Can you stop doing that? \n" + String(counter)
-        }
-        
-        if counter%2==1 {
-            mySpinner.startAnimating()
-        }
-        else{
-            mySpinner.stopAnimating()
+        if numberOfClicks.isMultiple(of: 2) {
+            touchCounterButtonSpinner.startAnimating()
+        } else{
+            touchCounterButtonSpinner.stopAnimating()
         }
     }
-    @IBOutlet weak var Label: UILabel!{
-        didSet{
-            self.Label.text = "What is my purpose? I hope I'm not a butter passer..."
-            self.Label.font = UIFont (name: "Didot", size: 30)
+    
+    private func configureUI() {
+        touchCounterButton.layer.cornerRadius = 20
+        touchCounterButtonSpinner.startAnimating()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.touchCounterButtonSpinner.stopAnimating()
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .lightGray
-        mySpinner.startAnimating()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.mySpinner.stopAnimating()
-        }
-        myButton.layer.cornerRadius = 10
-        myButton.clipsToBounds = true
-        myButton.backgroundColor = .darkGray
-        myButton.setTitleColor(.blue, for: .normal)
-        myButton.setImage(UIImage(named: "logo")?.withRenderingMode(.alwaysOriginal), for: .normal)
-        
-        
-        // Do any additional setup after loading the view.
+        configureUI()
     }
-    
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
