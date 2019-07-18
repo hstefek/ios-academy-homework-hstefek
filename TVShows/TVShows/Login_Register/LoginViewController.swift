@@ -62,8 +62,12 @@ final class LoginViewController: UIViewController {
     @IBAction private func createAccHomePush() {
         let useremail =  emailField.text!
         let pass =  passField.text!
-        SVProgressHUD.setDefaultMaskType(.black)
-        _alamofireCodableRegisterUserWith(email: useremail, password: pass)
+        if useremail.isEmpty == false {
+            SVProgressHUD.setDefaultMaskType(.black)
+            _alamofireCodableRegisterUserWith(email: useremail, password: pass)
+        } else {
+            print("API failure: Enter username!")
+        }
     }
     
     //MARK: - Functions
