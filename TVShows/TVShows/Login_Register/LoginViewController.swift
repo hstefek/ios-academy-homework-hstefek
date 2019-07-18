@@ -56,14 +56,12 @@ final class LoginViewController: UIViewController {
     @IBAction private func loginHomePush() {
         let useremail =  emailField.text!
         let pass =  passField.text!
-        SVProgressHUD.setDefaultMaskType(.black)
         _loginUserWith(email: useremail, password: pass)
     }
     @IBAction private func createAccHomePush() {
         let useremail =  emailField.text!
         let pass =  passField.text!
         if useremail.isEmpty == false {
-            SVProgressHUD.setDefaultMaskType(.black)
             _alamofireCodableRegisterUserWith(email: useremail, password: pass)
         } else {
             print("API failure: Enter username!")
@@ -77,18 +75,16 @@ final class LoginViewController: UIViewController {
     }
     private func configureUI() {
         logInButton.layer.cornerRadius = 5
+        SVProgressHUD.setDefaultMaskType(.black)
         }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
     }
-}
-
-// MARK: - Register + automatic JSON parsing
-private extension LoginViewController {
     
-    func _alamofireCodableRegisterUserWith(email: String, password: String) {
+    // MARK: - Register + automatic JSON parsing
+    private func _alamofireCodableRegisterUserWith(email: String, password: String) {
         SVProgressHUD.show()
         
         let parameters: [String: String] = [
@@ -107,20 +103,17 @@ private extension LoginViewController {
                 switch response.result {
                 case .success(let user):
                     var LoginUser: String = user.id
+                    SVProgressHUD.dismiss()
+                    self._loginUserWith(email: email, password: password)
                 case .failure(let error):
+                    SVProgressHUD.dismiss()
                     print("API failure: \(error)")
                 }
         }
-        SVProgressHUD.dismiss()
-        _loginUserWith(email: email, password: password)
     }
     
-}
-
-// MARK: - Login + automatic JSON parsing
-private extension LoginViewController {
-    
-    func _loginUserWith(email: String, password: String) {
+    // MARK: - Login + automatic JSON parsing
+    private func _loginUserWith(email: String, password: String) {
         SVProgressHUD.show()
         let parameters: [String: String] = [
             "email": email,
@@ -138,13 +131,14 @@ private extension LoginViewController {
                 case .success(let response):
                     //var LoginUser: String = response.id
                     SVProgressHUD.showSuccess(withStatus: "Success")
+                    SVProgressHUD.dismiss()
+                    self?.goToHome()
                 case .failure(let error):
                     print("API failure: \(error)")
                     SVProgressHUD.showError(withStatus: "Failure")
+                    SVProgressHUD.dismiss()
                 }
         }
-        SVProgressHUD.dismiss()
-        goToHome()
     }
-    
 }
+
