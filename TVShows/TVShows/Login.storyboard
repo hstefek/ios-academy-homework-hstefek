@@ -52,6 +52,9 @@
                                                                         <rect key="frame" x="0.0" y="0.0" width="56.5" height="30"/>
                                                                         <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="18"/>
                                                                         <state key="normal" image="ic-checkbox-empty"/>
+                                                                        <connections>
+                                                                            <action selector="checkboxButtonAction" destination="kPq-DE-6ah" eventType="touchUpInside" id="aMN-QK-LZr"/>
+                                                                        </connections>
                                                                     </button>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Remember me" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sA3-qr-Rwo">
                                                                         <rect key="frame" x="75.5" y="0.0" width="322.5" height="30"/>
@@ -60,9 +63,6 @@
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                 </subviews>
-                                                                <constraints>
-                                                                    <constraint firstItem="sA3-qr-Rwo" firstAttribute="leading" secondItem="N9t-4e-7Wy" secondAttribute="trailing" constant="19" id="xFb-2Y-Fvt"/>
-                                                                </constraints>
                                                                 <variation key="heightClass=regular" spacing="19"/>
                                                             </stackView>
                                                         </subviews>
@@ -131,6 +131,7 @@
                         <viewLayoutGuide key="safeArea" id="OP9-tp-B3v"/>
                     </view>
                     <connections>
+                        <outlet property="checkboxButton" destination="N9t-4e-7Wy" id="1qu-5i-qds"/>
                         <outlet property="logInButton" destination="5XN-ir-YCC" id="Sn9-1v-Fu0"/>
                     </connections>
                 </viewController>
