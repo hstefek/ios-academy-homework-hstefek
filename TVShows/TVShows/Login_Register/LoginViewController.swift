@@ -110,6 +110,22 @@ final class LoginViewController: UIViewController {
                     print("API failure: \(error)")
                 }
         }
+        /*firstly {
+            Alamofire
+                .request(
+                    "https://api.infinum.academy/api/users",
+                    method: .post,
+                    parameters: parameters,
+                    encoding: JSONEncoding.default)
+                .responseDecodable(User.self)
+            }.done { user in
+                var LoginUser: String = user.id
+                SVProgressHUD.dismiss()
+                self._loginUserWith(email: email, password: password)
+            }.catch { error in
+                SVProgressHUD.dismiss()
+                print("API failure: \(error)")
+        }*/
     }
     
     // MARK: - Login + automatic JSON parsing
