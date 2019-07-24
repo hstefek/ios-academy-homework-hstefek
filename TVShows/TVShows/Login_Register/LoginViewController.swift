@@ -10,69 +10,18 @@ import UIKit
 import SVProgressHUD
 import Alamofire
 import CodableAlamofire
-import Foundation
-
-struct User: Codable {
-    let email: String
-    let type: String
-    let id: String
-    
-    enum CodingKeys: String, CodingKey {
-        case email
-        case type
-        case id = "_id"
-    }
-}
-
-struct LoginData: Codable {
-    let token: String
-}
 
 final class LoginViewController: UIViewController {
-    
-    // MARK: - Images
-    private let checkedImage = UIImage(named: "ic-checkbox-filled")! as UIImage
-    private let uncheckedImage = UIImage(named: "ic-checkbox-empty")! as UIImage
     
     // MARK: - Outlets
     @IBOutlet private weak var logInButton: UIButton!
     @IBOutlet private weak var checkboxButton: UIButton!
     @IBOutlet private weak var emailField: UITextField!
-    @IBOutlet private weak var passField: UITextField!
+    @IBOutlet private weak var passwordField: UITextField!
     
-    // MARK: - Variables
-    private var isChecked: Bool = false
-
-    // MARK: - Actions
-    @IBAction private func checkboxButtonAction() {
-        if isChecked == false{
-            checkboxButton.setImage(checkedImage, for: UIControl.State.normal)
-            isChecked = true
-        } else {
-            checkboxButton.setImage(uncheckedImage, for: UIControl.State.normal)
-            isChecked = false
-        }
-    }
-    @IBAction private func loginHomePush() {
-        let useremail =  emailField.text!
-        let pass =  passField.text!
-        _loginUserWith(email: useremail, password: pass)
-    }
-    @IBAction private func createAccHomePush() {
-        let useremail =  emailField.text!
-        let pass =  passField.text!
-        if useremail.isEmpty == false {
-            _alamofireCodableRegisterUserWith(email: useremail, password: pass)
-        } else {
-            print("API failure: Enter username!")
-        }
-    }
+    //MARK: - Properties
     
-    //MARK: - Functions
-    private func goToHome(){
-        let newViewController = UIStoryboard(name: "Home", bundle: nil).instantiateViewController(withIdentifier: "HomeViewController") as UIViewController
-        present(newViewController, animated: true, completion: nil)
-    }
+    //MARK: - Lifecycle methods
     private func configureUI() {
         logInButton.layer.cornerRadius = 5
         SVProgressHUD.setDefaultMaskType(.black)
@@ -83,8 +32,43 @@ final class LoginViewController: UIViewController {
         configureUI()
     }
     
+    // MARK: - Actions
+    @IBAction private func checkboxButtonAction() {
+        checkboxButton.isSelected.toggle()
+    }
+    @IBAction private func loginHomePush() {
+        guard let email = emailField.text, let password = passwordField.text else { return }
+        _loginUserWith(email: email, password: password)
+    }
+    @IBAction private func createAccHomePush() {
+        guard let email = emailField.text, let password = passwordField.text else { return }
+        if email.isEmpty {
+            print("API failure: Enter username!")
+        } else {
+            _RegisterUserWith(email: email, password: password)
+            print("API failure: Enter username!")
+        }
+    }
+    
+    //MARK: - Private functions
+    private func goToHome(){
+        let newViewController = UIStoryboard(name: "Home", bundle: nil).instantiateViewController(withIdentifier: "HomeViewController") as UIViewController
+        present(newViewController, animated: true, completion: nil)
+    }
+    
+    private func showLoginError(error: String){
+        let alertController = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
+        let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
+            print("pressed OK")
+        }
+        alertController.addAction(OKAction)
+        self.present(alertController, animated: true) {
+            print("alertController shown")
+        }
+    }
+    
     // MARK: - Register + automatic JSON parsing
-    private func _alamofireCodableRegisterUserWith(email: String, password: String) {
+    private func _RegisterUserWith(email: String, password: String) {
         SVProgressHUD.show()
         
         let parameters: [String: String] = [
@@ -99,10 +83,11 @@ final class LoginViewController: UIViewController {
                 parameters: parameters,
                 encoding: JSONEncoding.default)
             .validate()
-            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) { (response: DataResponse<User>) in
+            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {[weak self] (response: DataResponse<User>) in
+                guard let self = self else { return }
                 switch response.result {
                 case .success(let user):
-                    var LoginUser: String = user.id
+                    var token: String = user.id
                     SVProgressHUD.dismiss()
                     self._loginUserWith(email: email, password: password)
                 case .failure(let error):
@@ -110,30 +95,15 @@ final class LoginViewController: UIViewController {
                     print("API failure: \(error)")
                 }
         }
-        /*firstly {
-            Alamofire
-                .request(
-                    "https://api.infinum.academy/api/users",
-                    method: .post,
-                    parameters: parameters,
-                    encoding: JSONEncoding.default)
-                .responseDecodable(User.self)
-            }.done { user in
-                var LoginUser: String = user.id
-                SVProgressHUD.dismiss()
-                self._loginUserWith(email: email, password: password)
-            }.catch { error in
-                SVProgressHUD.dismiss()
-                print("API failure: \(error)")
-        }*/
     }
+    
     
     // MARK: - Login + automatic JSON parsing
     private func _loginUserWith(email: String, password: String) {
         SVProgressHUD.show()
         let parameters: [String: String] = [
             "email": email,
-            "password": password
+            "password": password,
         ]
         Alamofire
             .request(
@@ -143,18 +113,19 @@ final class LoginViewController: UIViewController {
                 encoding: JSONEncoding.default)
             .validate()
             .responseJSON { [weak self] dataResponse in
+                guard let self = self else { return }
                 switch dataResponse.result {
                 case .success(let response):
-                    //var LoginUser: String = response.id
                     SVProgressHUD.showSuccess(withStatus: "Success")
                     SVProgressHUD.dismiss()
-                    self?.goToHome()
+                    self.goToHome()
                 case .failure(let error):
-                    print("API failure: \(error)")
-                    SVProgressHUD.showError(withStatus: "Failure")
+                    let apiFailure: String = "\(error)"
+                    self.showLoginError(error: apiFailure)
                     SVProgressHUD.dismiss()
                 }
         }
     }
+
 }
 

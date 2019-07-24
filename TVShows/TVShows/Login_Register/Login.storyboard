@@ -52,6 +52,7 @@
                                                                         <rect key="frame" x="0.0" y="0.0" width="56.5" height="30"/>
                                                                         <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="18"/>
                                                                         <state key="normal" image="ic-checkbox-empty"/>
+                                                                        <state key="selected" image="ic-checkbox-filled"/>
                                                                         <connections>
                                                                             <action selector="checkboxButtonAction" destination="kPq-DE-6ah" eventType="touchUpInside" id="aMN-QK-LZr"/>
                                                                         </connections>
@@ -141,7 +142,7 @@
                         <outlet property="checkboxButton" destination="N9t-4e-7Wy" id="1qu-5i-qds"/>
                         <outlet property="emailField" destination="LVS-kg-QR3" id="RGA-CS-3XJ"/>
                         <outlet property="logInButton" destination="5XN-ir-YCC" id="Sn9-1v-Fu0"/>
-                        <outlet property="passField" destination="8Si-fb-r8y" id="WfX-pr-YNg"/>
+                        <outlet property="passwordField" destination="8Si-fb-r8y" id="CZP-tr-T9Q"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fwh-dv-c6k" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -177,6 +178,7 @@
     </scenes>
     <resources>
         <image name="ic-checkbox-empty" width="24" height="24"/>
+        <image name="ic-checkbox-filled" width="24" height="24"/>
         <image name="login-logo" width="75" height="80"/>
     </resources>
 </document>
