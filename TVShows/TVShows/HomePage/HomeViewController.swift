@@ -11,27 +11,22 @@ import SVProgressHUD
 import Alamofire
 import CodableAlamofire
 
-class HomeViewController: UIViewController {
+final class HomeViewController: UIViewController {
 
+    @IBOutlet private weak var tableView: UITableView!
+    
     var token = String()
     private var show = [Show]();
+
     override func viewDidLoad() {
         super.viewDidLoad()
         _fetchShows()
     }
+}
+
+// MARK: - Fetch shows
+private extension HomeViewController {
     
-    private func showFetchError(error: String){
-        let alertController = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
-        let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
-            print("pressed OK")
-        }
-        alertController.addAction(OKAction)
-        self.present(alertController, animated: true) {
-            print("alertController shown")
-        }
-    }
-    
-    // MARK: - Fetch shows
     private func _fetchShows() {
         SVProgressHUD.show()
         let headers = ["Authorization": token]
@@ -47,7 +42,7 @@ class HomeViewController: UIViewController {
                 switch dataResponse.result {
                 case .success(let response):
                     self.show = response
-                    print(self.show[0].title)
+                    self.reloadData()
                     SVProgressHUD.dismiss()
                 case .failure(let error):
                     let apiFailure: String = "\(error)"
@@ -56,4 +51,56 @@ class HomeViewController: UIViewController {
                 }
         }
     }
+}
+
+// MARK: - UITableView
+extension HomeViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let item = show[indexPath.row]
+        print("Selected Item: \(item)")
+    }
+}
+
+extension HomeViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return show.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        print("CURRENT INDEX PATH BEING CONFIGURED: \(indexPath)")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTableViewCell", for: indexPath) as! HomeTableViewCell
+        cell.configure(with: show[indexPath.row])
+        return cell
+    }
+}
+
+//MARK: - Private
+private extension HomeViewController {
+    
+    func setupTableView() {
+        tableView.estimatedRowHeight = 110
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.tableFooterView = UIView()
+        tableView.delegate = self
+        tableView.dataSource = self
+    }
+    
+    private func showFetchError(error: String){
+        let alertController = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
+        let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
+            print("pressed OK")
+        }
+        alertController.addAction(OKAction)
+        self.present(alertController, animated: true) {
+            print("alertController shown")
+        }
+    }
+    
+    private func reloadData() {
+        setupTableView()
+    }
+    
 }
