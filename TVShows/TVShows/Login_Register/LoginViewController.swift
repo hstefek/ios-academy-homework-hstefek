@@ -46,14 +46,15 @@ final class LoginViewController: UIViewController {
             print("API failure: Enter username!")
         } else {
             _RegisterUserWith(email: email, password: password)
-            print("API failure: Enter username!")
         }
     }
     
     //MARK: - Private functions
-    private func goToHome(){
-        let newViewController = UIStoryboard(name: "Home", bundle: nil).instantiateViewController(withIdentifier: "HomeViewController") as UIViewController
-        present(newViewController, animated: true, completion: nil)
+    private func goToHome(token: String){
+        if let newViewController = UIStoryboard(name: "Home", bundle: nil).instantiateViewController(withIdentifier: "HomeViewController") as? HomeViewController {
+                newViewController.token = token
+                self.present(newViewController, animated: true)
+        }
     }
     
     private func showLoginError(error: String){
@@ -70,12 +71,10 @@ final class LoginViewController: UIViewController {
     // MARK: - Register + automatic JSON parsing
     private func _RegisterUserWith(email: String, password: String) {
         SVProgressHUD.show()
-        
         let parameters: [String: String] = [
             "email": email,
             "password": password
         ]
-        
         Alamofire
             .request(
                 "https://api.infinum.academy/api/users",
@@ -87,7 +86,7 @@ final class LoginViewController: UIViewController {
                 guard let self = self else { return }
                 switch response.result {
                 case .success(let user):
-                    var token: String = user.id
+                    print("\(user)")
                     SVProgressHUD.dismiss()
                     self._loginUserWith(email: email, password: password)
                 case .failure(let error):
@@ -112,13 +111,14 @@ final class LoginViewController: UIViewController {
                 parameters: parameters,
                 encoding: JSONEncoding.default)
             .validate()
-            .responseJSON { [weak self] dataResponse in
+            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {[weak self] (dataResponse: DataResponse<LoginData>) in
                 guard let self = self else { return }
                 switch dataResponse.result {
                 case .success(let response):
+                    print("\(response)")
                     SVProgressHUD.showSuccess(withStatus: "Success")
                     SVProgressHUD.dismiss()
-                    self.goToHome()
+                    self.goToHome(token: response.token)
                 case .failure(let error):
                     let apiFailure: String = "\(error)"
                     self.showLoginError(error: apiFailure)
