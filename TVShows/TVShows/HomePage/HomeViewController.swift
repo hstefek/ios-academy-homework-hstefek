@@ -59,6 +59,11 @@ extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let item = show[indexPath.row]
+        if let newViewController = UIStoryboard(name: "Home", bundle: nil).instantiateViewController(withIdentifier: "ShowDetailsViewController") as? ShowDetailsViewController {
+            newViewController.token = token
+            newViewController.showId = item._id
+            self.present(newViewController, animated: true)
+        }
         print("Selected Item: \(item)")
     }
 }
