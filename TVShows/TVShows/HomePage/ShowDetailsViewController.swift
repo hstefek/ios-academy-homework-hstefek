@@ -19,6 +19,28 @@ final class ShowDetailsViewController: UIViewController {
     @IBOutlet weak var detailsEpisodesCount: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
+    var token = String()
+    var showId = String()
+    private var episodes = [ShowEpisodes]()
+    private var naslov = String()
+    private var opis = String()
+    
+    func setupUI() {
+        detailsThumbnail.layer.cornerRadius = 20
+        detailsThumbnail.image = UIImage(named: "icImagePlaceholder")
+        detailsTitle.text = naslov
+        detailsDescription.text = opis
+        detailsEpisodesCount.text = "Episodes \(episodes.count)"
+        setupTableView()
+    }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        _getDetails()
+    }
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
+    
     @IBAction func pressBackButton(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }
@@ -30,21 +52,6 @@ final class ShowDetailsViewController: UIViewController {
             let navigationController = UINavigationController(rootViewController: newViewController)
             present(navigationController, animated: true)
         }
-    }
-    
-    var token = String()
-    var showId = String()
-    private var episodes = [ShowEpisodes]()
-    private var naslov = String()
-    private var opis = String()
-        
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        _getDetails()
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
     }
 }
 
@@ -136,16 +143,6 @@ private extension ShowDetailsViewController {
         tableView.tableFooterView = UIView()
         tableView.delegate = self
         tableView.dataSource = self
-    }
-    
-    
-    func setupUI() {
-        detailsThumbnail.layer.cornerRadius = 20
-        detailsThumbnail.image = UIImage(named: "icImagePlaceholder")
-        detailsTitle.text = naslov
-        detailsDescription.text = opis
-        detailsEpisodesCount.text = "Episodes \(episodes.count)"
-        setupTableView()
     }
     
     private func showFetchError(error: String){
