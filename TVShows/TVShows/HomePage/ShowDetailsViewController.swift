@@ -19,6 +19,19 @@ final class ShowDetailsViewController: UIViewController {
     @IBOutlet weak var detailsEpisodesCount: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
+    @IBAction func pressBackButton(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    @IBAction func pressAddEpisodes(_ sender: Any) {
+        if let newViewController = UIStoryboard(name: "Home", bundle: nil).instantiateViewController(withIdentifier: "AddEpisodesViewController") as? AddEpisodesViewController {
+            newViewController.token = token
+            newViewController.showId = showId
+            newViewController.delegate = self
+            let navigationController = UINavigationController(rootViewController: newViewController)
+            present(navigationController, animated: true)
+        }
+    }
+    
     var token = String()
     var showId = String()
     private var episodes = [ShowEpisodes]()
@@ -27,9 +40,7 @@ final class ShowDetailsViewController: UIViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
         _getDetails()
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -56,7 +67,6 @@ private extension ShowDetailsViewController {
                 case .success(let response):
                     self.naslov = response.title
                     self.opis = response.description
-                    print("\(response)")
                     self._getEpisodes()
                     SVProgressHUD.dismiss()
                 case .failure(let error):
@@ -82,8 +92,7 @@ private extension ShowDetailsViewController {
                 switch dataResponse.result {
                 case .success(let response):
                     self.episodes = response
-                    print("\(self.episodes)")
-                    self.reloadData()
+                    self.setupUI()
                     SVProgressHUD.dismiss()
                 case .failure(let error):
                     let apiFailure: String = "\(error)"
@@ -111,7 +120,7 @@ extension ShowDetailsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print("CURRENT INDEX PATH BEING CONFIGURED: \(indexPath)")
+        //print("CURRENT INDEX PATH BEING CONFIGURED: \(indexPath)")
         let cell = tableView.dequeueReusableCell(withIdentifier: "ShowDetailTableViewCell", for: indexPath) as! ShowDetailTableViewCell
         cell.configure(with: episodes[indexPath.row])
         return cell
@@ -132,6 +141,11 @@ private extension ShowDetailsViewController {
     
     func setupUI() {
         detailsThumbnail.layer.cornerRadius = 20
+        detailsThumbnail.image = UIImage(named: "icImagePlaceholder")
+        detailsTitle.text = naslov
+        detailsDescription.text = opis
+        detailsEpisodesCount.text = "Episodes \(episodes.count)"
+        setupTableView()
     }
     
     private func showFetchError(error: String){
@@ -144,14 +158,12 @@ private extension ShowDetailsViewController {
             print("alertController shown")
         }
     }
+}
+
+extension ShowDetailsViewController: AddShowDetailsViewControllerDelegate {
     
-    private func reloadData() {
-        detailsThumbnail.image = UIImage(named: "icImagePlaceholder")
-        detailsTitle.text = naslov
-        detailsDescription.text = opis
-        detailsEpisodesCount.text = "Episodes \(episodes.count)"
-        setupTableView()
+    func reloadData() {
+        _getDetails()
     }
-    
 }
 
