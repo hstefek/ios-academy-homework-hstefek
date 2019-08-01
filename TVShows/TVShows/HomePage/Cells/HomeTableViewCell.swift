@@ -7,11 +7,12 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class HomeTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var slika: UIImageView!
-    @IBOutlet weak var naslov: UILabel!
+    @IBOutlet weak var showImage: UIImageView!
+    @IBOutlet weak var showTitle: UILabel!
     
     // MARK: - Lifecycle
     override func awakeFromNib() {
@@ -21,8 +22,8 @@ final class HomeTableViewCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        slika.image = nil
-        naslov.text = nil
+        showImage.image = nil
+        showTitle.text = nil
     }
     
 }
@@ -30,15 +31,15 @@ final class HomeTableViewCell: UITableViewCell {
 // MARK: - Configure
 extension HomeTableViewCell {
     func configure(with item: Show) {
-        slika.image = UIImage(named: "icImagePlaceholder")
-        naslov.text = item.title
+        showImage.kf.setImage(with: URL(string: "https://api.infinum.academy" + item.imageUrl))
+        showTitle.text = item.title
     }
 }
 
 // MARK: - Private
 private extension HomeTableViewCell {
     func setupUI() {
-        slika.layer.cornerRadius = 20
+        showImage.layer.cornerRadius = 20
     }
 }
 

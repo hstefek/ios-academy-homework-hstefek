@@ -20,12 +20,19 @@ final class LoginViewController: UIViewController {
     @IBOutlet private weak var passwordField: UITextField!
     
     //MARK: - Properties
-    
+    private var name = UserDefaults.standard.string(forKey: "name") ?? ""
+    private var pass = UserDefaults.standard.string(forKey: "pass") ?? ""
+
     //MARK: - Lifecycle methods
     private func configureUI() {
         logInButton.layer.cornerRadius = 5
         SVProgressHUD.setDefaultMaskType(.black)
+        emailField.text = name
+        passwordField.text = pass
+        if name != "" {
+            _loginUserWith(email: name, password: pass)
         }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,15 +44,15 @@ final class LoginViewController: UIViewController {
         checkboxButton.isSelected.toggle()
     }
     @IBAction private func loginHomePush() {
-        guard let email = emailField.text, let password = passwordField.text else { return }
-        _loginUserWith(email: email, password: password)
+        rememberMe()
+        _loginUserWith(email: name, password: pass)
     }
     @IBAction private func createAccHomePush() {
-        guard let email = emailField.text, let password = passwordField.text else { return }
-        if email.isEmpty {
+        rememberMe()
+        if name.isEmpty {
             print("API failure: Enter username!")
         } else {
-            _RegisterUserWith(email: email, password: password)
+            _RegisterUserWith(email: name, password: pass)
         }
     }
     
@@ -55,6 +62,16 @@ final class LoginViewController: UIViewController {
                 newViewController.token = token
                 self.present(newViewController, animated: true)
         }
+    }
+    
+    private func rememberMe() {
+        guard let email = emailField.text, let password = passwordField.text else { return }
+        if checkboxButton.isSelected {
+            UserDefaults.standard.set(email, forKey: "name")
+            UserDefaults.standard.set(password, forKey: "pass")
+        }
+        name = email
+        pass = password
     }
     
     private func showLoginError(error: String){

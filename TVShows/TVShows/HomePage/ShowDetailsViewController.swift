@@ -10,6 +10,7 @@ import UIKit
 import SVProgressHUD
 import Alamofire
 import CodableAlamofire
+import Kingfisher
 
 final class ShowDetailsViewController: UIViewController {
 
@@ -22,14 +23,15 @@ final class ShowDetailsViewController: UIViewController {
     var token = String()
     var showId = String()
     private var episodes = [ShowEpisodes]()
-    private var naslov = String()
-    private var opis = String()
+    private var showTitle = String()
+    private var showDescription = String()
+    private var showImage = String()
     
     func setupUI() {
         detailsThumbnail.layer.cornerRadius = 20
-        detailsThumbnail.image = UIImage(named: "icImagePlaceholder")
-        detailsTitle.text = naslov
-        detailsDescription.text = opis
+        detailsThumbnail.kf.setImage(with: URL(string: "https://api.infinum.academy" + showImage))
+        detailsTitle.text = showTitle
+        detailsDescription.text = showDescription
         detailsEpisodesCount.text = "Episodes \(episodes.count)"
         setupTableView()
     }
@@ -72,8 +74,9 @@ private extension ShowDetailsViewController {
                 guard let self = self else { return }
                 switch dataResponse.result {
                 case .success(let response):
-                    self.naslov = response.title
-                    self.opis = response.description
+                    self.showTitle = response.title
+                    self.showDescription = response.description
+                    self.showImage = response.imageUrl
                     self._getEpisodes()
                     SVProgressHUD.dismiss()
                 case .failure(let error):
