@@ -60,7 +60,8 @@ final class LoginViewController: UIViewController {
     private func goToHome(token: String){
         if let newViewController = UIStoryboard(name: "Home", bundle: nil).instantiateViewController(withIdentifier: "HomeViewController") as? HomeViewController {
                 newViewController.token = token
-                self.present(newViewController, animated: true)
+                let navigationController = UINavigationController(rootViewController: newViewController)
+                present(navigationController, animated: true)
         }
     }
     
@@ -75,6 +76,7 @@ final class LoginViewController: UIViewController {
     }
     
     private func showLoginError(error: String){
+        self.logInButton.shake()
         let alertController = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
         let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
             print("pressed OK")
@@ -146,3 +148,11 @@ final class LoginViewController: UIViewController {
 
 }
 
+extension UIView {
+    func shake(duration: TimeInterval = 0.5, xValue: CGFloat = 12, yValue: CGFloat = 0) {
+        self.transform = CGAffineTransform(translationX: xValue, y: yValue)
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
+            self.transform = CGAffineTransform.identity
+        }, completion: nil)
+    }
+}

@@ -39,6 +39,7 @@ extension HomeTableViewCell {
 // MARK: - Private
 private extension HomeTableViewCell {
     func setupUI() {
+        showTitle.sizeToFit()
         showImage.layer.cornerRadius = 20
     }
 }

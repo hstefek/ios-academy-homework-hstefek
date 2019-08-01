@@ -18,9 +18,29 @@ final class HomeViewController: UIViewController {
     var token = String()
     private var show = [Show]();
 
+    @objc private func _logoutActionHandler() {
+        resetDefaults()
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func resetDefaults() {
+        let defaults = UserDefaults.standard
+        let dictionary = defaults.dictionaryRepresentation()
+        dictionary.keys.forEach { key in
+            defaults.removeObject(forKey: key)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         _fetchShows()
+        self.navigationController?.navigationBar.tintColor = UIColor.darkGray
+        navigationItem.leftBarButtonItem = UIBarButtonItem (
+            image: UIImage(named: "ic-logout"),
+            style: .plain,
+            target: self,
+            action: #selector(_logoutActionHandler)
+        )
     }
 }
 

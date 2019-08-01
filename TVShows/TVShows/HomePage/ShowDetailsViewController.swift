@@ -19,6 +19,7 @@ final class ShowDetailsViewController: UIViewController {
     @IBOutlet weak var detailsDescription: UILabel!
     @IBOutlet weak var detailsEpisodesCount: UILabel!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var addButton: UIButton!
     
     var token = String()
     var showId = String()
@@ -35,6 +36,7 @@ final class ShowDetailsViewController: UIViewController {
         detailsEpisodesCount.text = "Episodes \(episodes.count)"
         setupTableView()
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         _getDetails()
@@ -166,4 +168,3 @@ extension ShowDetailsViewController: AddShowDetailsViewControllerDelegate {
         _getDetails()
     }
 }
-
