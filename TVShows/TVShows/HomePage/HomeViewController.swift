@@ -34,7 +34,7 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         _fetchShows()
-        self.navigationController?.navigationBar.tintColor = UIColor.darkGray
+        navigationController?.navigationBar.tintColor = UIColor.darkGray
         navigationItem.leftBarButtonItem = UIBarButtonItem (
             image: UIImage(named: "ic-logout"),
             style: .plain,
@@ -113,7 +113,15 @@ private extension HomeViewController {
         tableView.dataSource = self
     }
     
-    private func showFetchError(error: String){
+    private func reloadData() {
+        setupTableView()
+    }
+    
+}
+
+extension UIViewController {
+    
+    func showFetchError(error: String){
         let alertController = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
         let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
             print("pressed OK")
@@ -123,9 +131,4 @@ private extension HomeViewController {
             print("alertController shown")
         }
     }
-    
-    private func reloadData() {
-        setupTableView()
-    }
-    
 }

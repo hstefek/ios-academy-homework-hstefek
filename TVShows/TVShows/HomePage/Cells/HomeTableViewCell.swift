@@ -11,8 +11,8 @@ import Kingfisher
 
 final class HomeTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var showImage: UIImageView!
-    @IBOutlet weak var showTitle: UILabel!
+    @IBOutlet private weak var showImage: UIImageView!
+    @IBOutlet private weak var showTitle: UILabel!
     
     // MARK: - Lifecycle
     override func awakeFromNib() {

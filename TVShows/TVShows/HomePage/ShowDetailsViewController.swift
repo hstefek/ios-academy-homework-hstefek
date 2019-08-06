@@ -14,16 +14,16 @@ import Kingfisher
 
 final class ShowDetailsViewController: UIViewController {
 
-    @IBOutlet weak var detailsThumbnail: UIImageView!
-    @IBOutlet weak var detailsTitle: UILabel!
-    @IBOutlet weak var detailsDescription: UILabel!
-    @IBOutlet weak var detailsEpisodesCount: UILabel!
-    @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var addButton: UIButton!
+    @IBOutlet private weak var detailsThumbnail: UIImageView!
+    @IBOutlet private weak var detailsTitle: UILabel!
+    @IBOutlet private weak var detailsDescription: UILabel!
+    @IBOutlet private weak var detailsEpisodesCount: UILabel!
+    @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var addButton: UIButton!
     
     var token = String()
     var showId = String()
-    private var episodes = [ShowEpisodes]()
+    private var episodes = [ShowDetails]()
     private var showTitle = String()
     private var showDescription = String()
     private var showImage = String()
@@ -41,12 +41,9 @@ final class ShowDetailsViewController: UIViewController {
         super.viewDidLoad()
         _getDetails()
     }
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
     
     @IBAction func pressBackButton(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     @IBAction func pressAddEpisodes(_ sender: Any) {
         if let newViewController = UIStoryboard(name: "Home", bundle: nil).instantiateViewController(withIdentifier: "AddEpisodesViewController") as? AddEpisodesViewController {
@@ -75,11 +72,8 @@ private extension ShowDetailsViewController {
             .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {[weak self] (dataResponse: DataResponse<ShowDetails>) in
                 guard let self = self else { return }
                 switch dataResponse.result {
-                case .success(let response):
-                    self.showTitle = response.title
-                    self.showDescription = response.description
-                    self.showImage = response.imageUrl
-                    self._getEpisodes()
+                case .success(var response):
+                    self.setShow(response: &response)
                     SVProgressHUD.dismiss()
                 case .failure(let error):
                     let apiFailure: String = "\(error)"
@@ -99,7 +93,7 @@ private extension ShowDetailsViewController {
                 encoding: JSONEncoding.default,
                 headers: headers)
             .validate()
-            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {[weak self] (dataResponse: DataResponse<[ShowEpisodes]>) in
+            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {[weak self] (dataResponse: DataResponse<[ShowDetails]>) in
                 guard let self = self else { return }
                 switch dataResponse.result {
                 case .success(let response):
@@ -150,19 +144,15 @@ private extension ShowDetailsViewController {
         tableView.dataSource = self
     }
     
-    private func showFetchError(error: String){
-        let alertController = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
-        let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
-            print("pressed OK")
-        }
-        alertController.addAction(OKAction)
-        self.present(alertController, animated: true) {
-            print("alertController shown")
-        }
+    func setShow(response: inout ShowDetails){
+        showTitle = response.title
+        showDescription = response.description
+        showImage = response.imageUrl!
+        _getEpisodes()
     }
 }
 
-extension ShowDetailsViewController: AddShowDetailsViewControllerDelegate {
+extension ShowDetailsViewController: AddShowDetailsDelegate {
     
     func reloadData() {
         _getDetails()

@@ -30,7 +30,7 @@ class ShowDetailTableViewCell: UITableViewCell {
 
 // MARK: - Configure
 extension ShowDetailTableViewCell {
-    func configure(with item: ShowEpisodes) {
+    func configure(with item: ShowDetails) {
         season.text = "S\(item.season)"
         episode.text = "E\(item.episodeNumber)"
         episodeTitle.text = item.title

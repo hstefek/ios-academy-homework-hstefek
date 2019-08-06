@@ -11,17 +11,17 @@ import SVProgressHUD
 import Alamofire
 import CodableAlamofire
 
-protocol AddShowDetailsViewControllerDelegate: class {
+protocol AddShowDetailsDelegate: class {
     func reloadData()
 }
 
 final class AddEpisodesViewController: UIViewController {
 
-    weak var delegate: AddShowDetailsViewControllerDelegate?
-    @IBOutlet weak var episodeTitle: UITextField!
-    @IBOutlet weak var seasonNumber: UITextField!
-    @IBOutlet weak var episodeNumber: UITextField!
-    @IBOutlet weak var episodeDescription: UITextField!
+    weak var delegate: AddShowDetailsDelegate?
+    @IBOutlet private weak var episodeTitle: UITextField!
+    @IBOutlet private weak var seasonNumber: UITextField!
+    @IBOutlet private weak var episodeNumber: UITextField!
+    @IBOutlet private weak var episodeDescription: UITextField!
     
     var token = String()
     var showId = String()
@@ -52,17 +52,6 @@ final class AddEpisodesViewController: UIViewController {
         _addShow(title: title, description: description, episodeNumber: episodeNumber, season: season)
     }
     
-    private func showError(error: String){
-        let alertController = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
-        let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
-            print("pressed OK")
-        }
-        alertController.addAction(OKAction)
-        self.present(alertController, animated: true) {
-            print("alertController shown")
-        }
-    }
-    
     // MARK: - Add show + automatic JSON parsing
     private func _addShow(title: String, description: String, episodeNumber: String, season: String) {
         SVProgressHUD.show()
@@ -82,7 +71,7 @@ final class AddEpisodesViewController: UIViewController {
                 encoding: JSONEncoding.default,
                 headers: headers)
             .validate()
-            .responseDecodableObject(keyPath: "data",  decoder: JSONDecoder()) {[weak self] (response: DataResponse<AddEpisode>) in
+            .responseDecodableObject(keyPath: "data",  decoder: JSONDecoder()) {[weak self] (response: DataResponse<ShowDetails>) in
                 guard let self = self else { return }
                 switch response.result {
                 case .success(let response):
@@ -92,7 +81,7 @@ final class AddEpisodesViewController: UIViewController {
                     self.dismiss(animated: true, completion: nil)
                 case .failure(let error):
                     let apiFailure: String = "\(error)"
-                    self.showError(error: apiFailure)
+                    self.showFetchError(error: apiFailure)
                     print("API failure: \(error)")
                     SVProgressHUD.dismiss()
                 }
