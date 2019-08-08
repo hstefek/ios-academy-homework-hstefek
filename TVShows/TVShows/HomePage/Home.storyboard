@@ -146,7 +146,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="pXj-oY-7kI">
-                                                            <rect key="frame" x="20" y="-16.5" width="374" height="60"/>
+                                                            <rect key="frame" x="20" y="-16.5" width="354" height="60"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZwA-dU-4pz">
                                                                     <rect key="frame" x="0.0" y="0.0" width="50" height="60"/>
@@ -167,7 +167,7 @@
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oGC-ba-KX4">
-                                                                    <rect key="frame" x="140" y="0.0" width="234" height="60"/>
+                                                                    <rect key="frame" x="140" y="0.0" width="214" height="60"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
@@ -282,6 +282,9 @@
                                         <state key="normal" title="Upload photo" image="ic-camera">
                                             <color key="titleColor" red="1" green="0.45882352939999999" blue="0.54901960780000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
+                                        <connections>
+                                            <action selector="uploadImage:" destination="BwQ-pG-xUe" eventType="touchUpInside" id="zn7-Rv-RVn"/>
+                                        </connections>
                                     </button>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="NQu-fy-A5A">
                                         <rect key="frame" x="0.0" y="200" width="374" height="220"/>
