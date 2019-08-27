@@ -20,12 +20,19 @@ final class LoginViewController: UIViewController {
     @IBOutlet private weak var passwordField: UITextField!
     
     //MARK: - Properties
-    
+    private var name = UserDefaults.standard.string(forKey: "name") ?? ""
+    private var pass = UserDefaults.standard.string(forKey: "pass") ?? ""
+
     //MARK: - Lifecycle methods
     private func configureUI() {
         logInButton.layer.cornerRadius = 5
         SVProgressHUD.setDefaultMaskType(.black)
+        emailField.text = name
+        passwordField.text = pass
+        if name != "" {
+            _loginUserWith(email: name, password: pass)
         }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,26 +44,39 @@ final class LoginViewController: UIViewController {
         checkboxButton.isSelected.toggle()
     }
     @IBAction private func loginHomePush() {
-        guard let email = emailField.text, let password = passwordField.text else { return }
-        _loginUserWith(email: email, password: password)
+        rememberMe()
+        _loginUserWith(email: name, password: pass)
     }
     @IBAction private func createAccHomePush() {
-        guard let email = emailField.text, let password = passwordField.text else { return }
-        if email.isEmpty {
+        rememberMe()
+        if name.isEmpty {
             print("API failure: Enter username!")
         } else {
-            _RegisterUserWith(email: email, password: password)
-            print("API failure: Enter username!")
+            _RegisterUserWith(email: name, password: pass)
         }
     }
     
     //MARK: - Private functions
-    private func goToHome(){
-        let newViewController = UIStoryboard(name: "Home", bundle: nil).instantiateViewController(withIdentifier: "HomeViewController") as UIViewController
-        present(newViewController, animated: true, completion: nil)
+    private func goToHome(token: String){
+        if let newViewController = UIStoryboard(name: "Home", bundle: nil).instantiateViewController(withIdentifier: "HomeViewController") as? HomeViewController {
+                newViewController.token = token
+                let navigationController = UINavigationController(rootViewController: newViewController)
+                present(navigationController, animated: true)
+        }
+    }
+    
+    private func rememberMe() {
+        guard let email = emailField.text, let password = passwordField.text else { return }
+        if checkboxButton.isSelected {
+            UserDefaults.standard.set(email, forKey: "name")
+            UserDefaults.standard.set(password, forKey: "pass")
+        }
+        name = email
+        pass = password
     }
     
     private func showLoginError(error: String){
+        self.logInButton.shake()
         let alertController = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
         let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
             print("pressed OK")
@@ -70,12 +90,10 @@ final class LoginViewController: UIViewController {
     // MARK: - Register + automatic JSON parsing
     private func _RegisterUserWith(email: String, password: String) {
         SVProgressHUD.show()
-        
         let parameters: [String: String] = [
             "email": email,
             "password": password
         ]
-        
         Alamofire
             .request(
                 "https://api.infinum.academy/api/users",
@@ -87,7 +105,7 @@ final class LoginViewController: UIViewController {
                 guard let self = self else { return }
                 switch response.result {
                 case .success(let user):
-                    var token: String = user.id
+                    print("\(user)")
                     SVProgressHUD.dismiss()
                     self._loginUserWith(email: email, password: password)
                 case .failure(let error):
@@ -112,13 +130,14 @@ final class LoginViewController: UIViewController {
                 parameters: parameters,
                 encoding: JSONEncoding.default)
             .validate()
-            .responseJSON { [weak self] dataResponse in
+            .responseDecodableObject(keyPath: "data", decoder: JSONDecoder()) {[weak self] (dataResponse: DataResponse<LoginData>) in
                 guard let self = self else { return }
                 switch dataResponse.result {
                 case .success(let response):
+                    print("\(response)")
                     SVProgressHUD.showSuccess(withStatus: "Success")
                     SVProgressHUD.dismiss()
-                    self.goToHome()
+                    self.goToHome(token: response.token)
                 case .failure(let error):
                     let apiFailure: String = "\(error)"
                     self.showLoginError(error: apiFailure)
@@ -129,3 +148,11 @@ final class LoginViewController: UIViewController {
 
 }
 
+extension UIView {
+    func shake(duration: TimeInterval = 0.5, xValue: CGFloat = 12, yValue: CGFloat = 0) {
+        self.transform = CGAffineTransform(translationX: xValue, y: yValue)
+        UIView.animate(withDuration: duration, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
+            self.transform = CGAffineTransform.identity
+        }, completion: nil)
+    }
+}
